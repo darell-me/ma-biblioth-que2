@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ma Bibliothèque</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: linear-gradient(to right, #998c95, #ca31b1);
+      color: #000;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    h1 {
+      font-weight: bold;
+    }
+
+    #category-select {
+      margin-bottom: 20px;
+    }
+
+    .book {
+      border: 1px solid #aaa;
+      background-color: #fff9e6;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+    }
+
+    .book img {
+      width: 100px;
+      height: auto;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    /* Mode sombre */
+    body.dark-mode {
+      background-color: #1e1e1e;
+      color: #ffffff;
+    }
+
+    body.dark-mode .book {
+      background-color: #2e2e2e;
+      border-color: #555;
+    }
+
+    /* Bouton dark mode */
+    #dark-mode-toggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      padding: 8px 12px;
+      background-color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode #dark-mode-toggle {
+      background-color: #444;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <button id="dark-mode-toggle">🌙 mode sombre</button>
+
+  <h1>Ma Bibliothèque</h1>
+
+  <label for="category-select">Choisir une catégorie :</label>
+  <select id="category-select">
+    <option value="tous">Tous</option>
+    <option value="romance">Romance</option>
+    <option value="thriller">Thriller</option>
+    <option value="drame">Drame</option>
+  </select>
+
+  <div id="book-list"></div>
+
+  <script>
+    const books = [
+      {
+        title: "Calander Girl",
+        author: "Audrey Carlan",
+        category: "romance",
+        file: "https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/Calendar-Girl-Lintegrale-FrenchPDF.pdf",
+        cover: "https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/calander%20girl.jpg"
+      },
+      {
+        title: "La fille dans le brouillard",
+        author: "Donato Carissi",
+        category: "drame",
+        file: 'https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/La-Fille-Dans-Le-Brouillard-FrenchPDF%20(1).pdf',
+        cover: 'https://raw.githubusercontent.com/darell-me/ma-biblio/main/la%20fille%20dans%20le%20brouillard.jpg'
+      },
+      {
+        title: "L'homme du grand hotel",
+        author: "Valentin Musso",
+        category: "drame",
+        file: "https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/omgrndtl.pdf",
+        cover: "https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/omgh.jpg"
+      },
+      {
+        title: "Avant toi",
+        author: "Jojo Moyes",
+        category: "romance",
+        file: "https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/avant-toi.pdf",
+        cover: 'https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/avant%20toi.jpg'
+        },
+        {
+        title: "Sois gentil tue le",
+        author: "Pascal Thiriet",
+        category: "thriller",
+        file: "https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/Sois-gentil-tue-le.pdf",
+        cover: 'https://raw.githubusercontent.com/darell-me/ma-biblio/main/tue%20le.jpg'
+      },
+        {
+        title: "A meme la peau",
+        author: "Lisa Gardner",
+        category: "thriller",
+        file: "https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/A-m%C3%AAme-la-peau-Lisa-Gardner-FrenchPDF.com_.pdf",
+        cover: "https://raw.githubusercontent.com/darell-me/ma-biblio/48b46a9844bfa93d2a24a6d2f316723ad746c0df/a%20meme%20la%20peau.jpg"
+      }
+    ];
+    const categorySelect = document.getElementById("category-select");
+    const bookList = document.getElementById("book-list");
+    const toggleBtn = document.getElementById("dark-mode-toggle");
+
+    function displayBooks(category) {
+      bookList.innerHTML = "";
+
+      const filteredBooks = category === "tous"
+        ? books
+        : books.filter(book => book.category === category);
+
+      if (filteredBooks.length === 0) {
+        bookList.innerHTML = "<p>Aucun livre dans cette catégorie.</p>";
+      } else {
+        filteredBooks.forEach(book => {
+          const div = document.createElement("div");
+          div.className = "book";
+
+          const img = document.createElement("img");
+          img.src = book.cover;
+          img.alt = "Couverture du livre";
+
+          const title = document.createElement("strong");
+          title.textContent = book.title;
+
+          const author = document.createElement("p");
+          author.textContent = "Auteur : " + book.author;
+
+          const link = document.createElement("a");
+          link.href = book.file;
+          link.textContent = "📖 Lire ou télécharger";
+          link.target = "_blank";
+
+          div.appendChild(img);
+          div.appendChild(title);
+          div.appendChild(author);
+          div.appendChild(link);
+          bookList.appendChild(div);
+        });
+      }
+    }
+
+    // Initial display
+    displayBooks("tous");
+
+    categorySelect.addEventListener("change", () => {
+      displayBooks(categorySelect.value);
+    });
+
+    // Mode sombre
+    if (localStorage.getItem('dark-mode') === 'true') {
+      document.body.classList.add('dark-mode');
+      toggleBtn.textContent = '☀ mode clair';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      toggleBtn.textContent = isDark ? '☀ mode clair' : '🌙 mode sombre';
+      localStorage.setItem('dark-mode', isDark);
+    });
+  </script>
+</body>
+</html>
